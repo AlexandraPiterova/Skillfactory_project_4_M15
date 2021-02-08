@@ -46,6 +46,17 @@ fun main() {
     "Ваша популярность падает!".yourHighness()
     "На нас напали!".yourHighness()
     "Нужно больше золота!".yourHighness()
+
+    kingdom.upgradeYourArmy(kingdom.archers) {
+        println(it)
+    }
+
+    kingdom.upgradeYourWarriors(kingdom.warriors) {
+        println(it)
+    }
+
+    kingdom.giveFunToPeasants(kingdom.peasants)
+
 }
 
 class Kingdom {
@@ -93,11 +104,34 @@ class Kingdom {
         }
     }
 
+    fun upgradeYourArmy(list: List<Archer>, operation: (List<Archer>) -> Unit) {
+        list.forEach {
+            it.bow = "Composite bow"
+        }
+        operation(list)
+    }
+
+    fun upgradeYourWarriors(list: List<Warrior>, operation: (List<Warrior>) -> Unit) {
+        list.forEach {
+            it.weapon = "Frostmorn"
+        }
+        operation(list)
+    }
+
+    fun giveFunToPeasants(list: List<Peasant>) {
+        list.forEach { peasant1 ->
+            list.forEach { peasant2 ->
+                if (peasant1.occupation == peasant2.occupation) println("Привет, коллега!")
+                else println("Вижу мы с вами занимаемся разным")
+            }
+        }
+    }
+
     init {
-        addHeirs(3)
-        addArchers(20)
-        addWarriors(30)
-        addPeasants(100)
+        addHeirs(2)
+        addArchers(5)
+        addWarriors(5)
+        addPeasants(5)
     }
 }
 
@@ -123,7 +157,7 @@ data class Archer(var bow: String = "Longbow", val dagger: String) {
     constructor(dagger: String): this("Longbow", dagger)
 }
 
-data class Warrior(val weapon: String)
+data class Warrior(var weapon: String)
 
 class WheelOfFortune {
     fun coefficient(): Float = (0..200).random() / 100f
