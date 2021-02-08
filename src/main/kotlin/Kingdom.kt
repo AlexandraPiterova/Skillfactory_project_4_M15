@@ -15,7 +15,7 @@ fun main() {
             val taxGroup = kingdom.peasants.filter {
                 it.occupation == Occupation.WORKER
             }
-            kingdom.treasury += taxGroup.size
+            kingdom.treasury += taxCalculation(taxGroup.size, 1)
         }
     }
 
@@ -24,7 +24,7 @@ fun main() {
             val taxGroup = kingdom.peasants.filter {
                 it.occupation == Occupation.BUILDER
             }
-            kingdom.treasury += taxGroup.size * 2
+            kingdom.treasury += taxCalculation(taxGroup.size, 2)
         }
     }
 
@@ -33,7 +33,7 @@ fun main() {
             val taxGroup = kingdom.peasants.filter {
                 it.occupation == Occupation.FARMER
             }
-            kingdom.treasury += taxGroup.size * 3
+            kingdom.treasury += taxCalculation(taxGroup.size, 3)
         }
     }
 
@@ -42,6 +42,10 @@ fun main() {
     farmerTaxCollector.collect()
 
     println("Gold: " + kingdom.treasury)
+
+    "Ваша популярность падает!".yourHighness()
+    "На нас напали!".yourHighness()
+    "Нужно больше золота!".yourHighness()
 }
 
 class Kingdom {
@@ -56,31 +60,44 @@ class Kingdom {
 
     private val wheelOfFortune = WheelOfFortune()
 
-    init {
-        for (i in 1..3) {
+    private fun addHeirs(amount: Int) {
+        for (i in 0 until amount) {
             heirs.add(Heir("Heir $i", wheelOfFortune))
         }
-        for (i in 1..20) {
+    }
+    private fun addArchers(amount: Int) {
+        for (i in 0 until amount) {
             if (i % 2 == 0) {
                 archers.add(Archer("Dagger"))
             } else {
                 archers.add(Archer("None"))
             }
         }
-        for (i in 1..30) {
+    }
+    private fun addWarriors(amount: Int) {
+        for (i in 0 until amount) {
             if (i % 2 == 0) {
                 warriors.add(Warrior("Sword"))
             } else {
                 warriors.add(Warrior("Axe"))
             }
         }
-        for (i in 1..100) {
+    }
+    private fun addPeasants(amount: Int) {
+        for (i in 0 until amount) {
             when {
                 i % 3 == 0 -> peasants.add(Peasant(Occupation.FARMER))
                 i % 2 == 0 -> peasants.add(Peasant(Occupation.BUILDER))
                 else -> peasants.add(Peasant(Occupation.WORKER))
             }
         }
+    }
+
+    init {
+        addHeirs(3)
+        addArchers(20)
+        addWarriors(30)
+        addPeasants(100)
     }
 }
 
@@ -124,4 +141,9 @@ abstract class TaxCollector : CollectTaxes
 
 interface CollectTaxes {
     fun collect()
+    fun taxCalculation(groupSize: Int, multiplier: Int) = groupSize * multiplier
+}
+
+fun String.yourHighness() {
+    println("Ваше Высочество! $this")
 }
